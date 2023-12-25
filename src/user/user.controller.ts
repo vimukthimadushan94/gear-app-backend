@@ -11,8 +11,9 @@ export class UserController {
     return user;
   }
 
-  @Get('/test')
+  @Get('/')
   getmethodsController() {
-    return 'test description';
+    const users = this.userService.getAllUsers();
+    return users;
   }
 }
