@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Req, Request } from '@nestjs/common';
+import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('user')
+@Controller('api/user')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -15,5 +16,14 @@ export class UserController {
   getmethodsController() {
     const users = this.userService.getAllUsers();
     return users;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/update-avatar')
+  async updateAvatar(@Request() req: any) {
+    console.log(req.user);
+    const user = this.userService.findOne(req.user.email);
+
+    return user;
   }
 }
