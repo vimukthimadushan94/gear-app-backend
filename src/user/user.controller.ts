@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -21,9 +29,22 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post('/update-avatar')
   async updateAvatar(@Request() req: any) {
-    console.log(req.user);
-    const user = this.userService.findOne(req.user.email);
+    const user = await this.userService.findOne(req.user.email);
+    if (req.body.avatar) {
+      user.avatar = req.body.avatar;
+      user.save();
+    }
 
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  async getProfile(@Request() req: any) {
+    const user = await this.userService.findOne(req.user.email);
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException();
   }
 }
