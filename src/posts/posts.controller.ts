@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Req,
   UploadedFiles,
@@ -41,5 +42,11 @@ export class PostsController {
       this.mediaServce.uploadFile(file, post._id);
     });
     return post;
+  }
+
+  @Get('/')
+  async getPosts() {
+    const posts = await this.postService.getAll();
+    return posts;
   }
 }

@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
 
 export type MediaDocument = HydratedDocument<Media>;
 
 @Schema({ timestamps: true })
 export class Media {
-  @Prop()
-  model_id: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, refPath: 'type' })
+  related_model: Types.ObjectId;
 
   @Prop()
   type: string;

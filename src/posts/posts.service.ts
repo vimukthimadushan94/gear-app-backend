@@ -10,4 +10,11 @@ export class PostsService {
   async create(data) {
     return await this.postModel.create(data);
   }
+
+  async getAll() {
+    return await this.postModel
+      .findById('659c049c671229f7a5858ffd')
+      .populate('media')
+      .exec();
+  }
 }
