@@ -12,9 +12,7 @@ export class PostsService {
   }
 
   async getAll() {
-    return await this.postModel
-      .findById('659c049c671229f7a5858ffd')
-      .populate('media')
-      .exec();
+    const posts = await this.postModel.find();
+    return posts;
   }
 }

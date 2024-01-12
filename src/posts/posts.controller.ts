@@ -15,7 +15,7 @@ import { MediaService } from 'src/media/media.service';
 export class PostsController {
   constructor(
     private postService: PostsService,
-    private mediaServce: MediaService,
+    private mediaService: MediaService,
   ) {}
 
   @Post('/create')
@@ -38,15 +38,13 @@ export class PostsController {
   ) {
     const post = await this.postService.create(req.body);
     images.forEach((file) => {
-      console.log(file);
-      this.mediaServce.uploadFile(file, post._id);
+      this.mediaService.uploadFile(file, post._id);
     });
     return post;
   }
 
   @Get('/')
   async getPosts() {
-    const posts = await this.postService.getAll();
-    return posts;
+    return await this.postService.getAll();
   }
 }

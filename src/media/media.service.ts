@@ -22,4 +22,8 @@ export class MediaService {
   async get() {
     return await this.mediaModel.find().populate('related_model');
   }
+
+  async getById(id: any) {
+    return await this.mediaModel.findById(id);
+  }
 }
