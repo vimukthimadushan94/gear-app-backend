@@ -1,15 +1,21 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
   Req,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { MediaService } from 'src/media/media.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { postCreateDto } from './dto/postCreate.dto';
 
 @Controller('api/posts')
 export class PostsController {
@@ -18,7 +24,9 @@ export class PostsController {
     private mediaService: MediaService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('/create')
+  @UsePipes(ValidationPipe)
   @UseInterceptors(
     FilesInterceptor('images', 20, {
       storage: diskStorage({
@@ -32,11 +40,12 @@ export class PostsController {
     }),
   )
   async createPost(
-    @Req() req: Request,
+    @Body() postCreateDto: postCreateDto,
+    @Req() req: any,
     @UploadedFiles()
     images: Array<Express.Multer.File>,
   ) {
-    const post = await this.postService.create(req.body);
+    const post = await this.postService.create(postCreateDto, req.user.userId);
     images.forEach((file) => {
       this.mediaService.uploadFile(file, post._id);
     });

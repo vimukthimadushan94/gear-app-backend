@@ -7,8 +7,9 @@ import { Model } from 'mongoose';
 export class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
-  async create(data) {
-    return await this.postModel.create(data);
+  async create(postCreateDto, userId) {
+    postCreateDto.user_id = userId;
+    return await this.postModel.create(postCreateDto);
   }
 
   async getAll() {
