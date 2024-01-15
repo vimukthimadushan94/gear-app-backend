@@ -9,6 +9,7 @@ import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
 import { MediaModule } from './media/media.module';
 import { MediaController } from './media/media.controller';
+import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MediaController } from './media/media.controller';
     AuthModule,
     PostsModule,
     MediaModule,
+    NestjsFormDataModule.config({ storage: MemoryStoredFile }),
   ],
   controllers: [AppController, PostsController, MediaController],
   providers: [AppService],

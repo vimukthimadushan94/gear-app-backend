@@ -41,7 +41,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   async getProfile(@Request() req: any) {
-    console.log('user profile calling...');
     const user = await this.userService.findOne(req.user.email);
     if (user) {
       return user;

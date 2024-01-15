@@ -4,7 +4,6 @@ import {
   Get,
   Post,
   Req,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -30,7 +29,7 @@ export class PostsController {
   @UseInterceptors(
     FilesInterceptor('images', 20, {
       storage: diskStorage({
-        destination: './uploads/posts',
+        // destination: './uploads/posts',
         filename: (req, file, callback) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -40,15 +39,15 @@ export class PostsController {
     }),
   )
   async createPost(
-    @Body() postCreateDto: postCreateDto,
+    @Body() postBody: postCreateDto,
     @Req() req: any,
-    @UploadedFiles()
-    images: Array<Express.Multer.File>,
+    // @UploadedFiles()
+    // images: Array<Express.Multer.File>,
   ) {
-    const post = await this.postService.create(postCreateDto, req.user.userId);
-    images.forEach((file) => {
-      this.mediaService.uploadFile(file, post._id);
-    });
+    const post = await this.postService.create(postBody, req.user.userId);
+    // images.forEach((file) => {
+    //   this.mediaService.uploadFile(file, post._id);
+    // });
     return post;
   }
 

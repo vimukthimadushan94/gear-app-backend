@@ -9,6 +9,8 @@ export class PostsService {
 
   async create(postCreateDto, userId) {
     postCreateDto.user_id = userId;
+    //post published when post created
+    postCreateDto.is_published = true;
     return await this.postModel.create(postCreateDto);
   }
 
