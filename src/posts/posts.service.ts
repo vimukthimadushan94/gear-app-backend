@@ -24,6 +24,17 @@ export class PostsService {
           as: 'medias',
         },
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
     ];
 
     const postsWithImages = await this.postModel.aggregate(pipeline).exec();
