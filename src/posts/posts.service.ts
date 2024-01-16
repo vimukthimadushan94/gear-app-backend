@@ -15,7 +15,18 @@ export class PostsService {
   }
 
   async getAll() {
-    const posts = await this.postModel.find();
-    return posts;
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'media',
+          localField: '_id',
+          foreignField: 'related_model',
+          as: 'medias',
+        },
+      },
+    ];
+
+    const postsWithImages = await this.postModel.aggregate(pipeline).exec();
+    return postsWithImages;
   }
 }
