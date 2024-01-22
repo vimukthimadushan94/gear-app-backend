@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -17,13 +18,13 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { postCreateDto } from './dto/postCreate.dto';
 
 @Controller('api/posts')
+@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(
     private postService: PostsService,
     private mediaService: MediaService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('/create')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
@@ -54,5 +55,21 @@ export class PostsController {
   @Get('/')
   async getPosts() {
     return await this.postService.getAll();
+  }
+
+  @Post('/like/:postId')
+  async like(@Param() data, @Req() req: any) {
+    const { postId } = data;
+    const userId = req.user.userId;
+    const post = await this.postService.like(postId, userId);
+    return post;
+  }
+
+  @Post('/unlike/:postId')
+  async unlike(@Param() data, @Req() req: any) {
+    const { postId } = data;
+    const userId = req.user.userId;
+    const post = await this.postService.unLike(postId, userId);
+    return post;
   }
 }

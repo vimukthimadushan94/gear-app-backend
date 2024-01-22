@@ -10,6 +10,8 @@ import { PostsModule } from './posts/posts.module';
 import { MediaModule } from './media/media.module';
 import { MediaController } from './media/media.controller';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -20,6 +22,10 @@ import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
     PostsModule,
     MediaModule,
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
   ],
   controllers: [AppController, PostsController, MediaController],
   providers: [AppService],

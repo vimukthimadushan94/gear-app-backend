@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
+import { User } from 'src/user/schemas/user.schema';
 
 export type PostDocument = HydratedDocument<Post>;
 
@@ -13,6 +14,9 @@ export class Post {
 
   @Prop()
   is_published: boolean;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }] })
+  user_likes: User[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

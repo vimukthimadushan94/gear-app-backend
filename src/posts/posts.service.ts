@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
 import { Model } from 'mongoose';
@@ -39,5 +39,37 @@ export class PostsService {
 
     const postsWithImages = await this.postModel.aggregate(pipeline).exec();
     return postsWithImages;
+  }
+
+  async like(id, userId) {
+    const post = await this.postModel.findOne({ _id: id });
+    if (post) {
+      post.user_likes.push(userId);
+      const updatedPost = await post.save();
+      return updatedPost;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  async unLike(id, userId) {
+    const post = await this.postModel.findOne({ _id: id });
+    if (post) {
+      const userIndex = post.user_likes.findIndex(
+        (id) => id.toString() === userId,
+      );
+
+      if (userIndex !== -1) {
+        post.user_likes.splice(userIndex, 1);
+
+        const updatedDoc = await post.save();
+
+        return updatedDoc;
+      } else {
+        return post;
+      }
+    } else {
+      throw new NotFoundException();
+    }
   }
 }
