@@ -1,11 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 
 @Injectable()
 export class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+
+  async findById(id) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ObjectId');
+    }
+    const post = await this.postModel.findOne({ _id: id });
+    if (post) {
+      return post;
+    } else {
+      return null;
+    }
+  }
 
   async create(postCreateDto, userId) {
     postCreateDto.user_id = userId;

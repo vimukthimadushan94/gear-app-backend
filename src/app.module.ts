@@ -12,6 +12,8 @@ import { MediaController } from './media/media.controller';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CommentController } from './comment/comment.controller';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -26,8 +28,9 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    CommentModule,
   ],
-  controllers: [AppController, PostsController, MediaController],
+  controllers: [AppController, PostsController, MediaController, CommentController],
   providers: [AppService],
 })
 export class AppModule {}
