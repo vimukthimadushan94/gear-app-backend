@@ -53,8 +53,9 @@ export class PostsController {
   }
 
   @Get('/')
-  async getPosts() {
-    return await this.postService.getAll();
+  async getPosts(@Req() req: any) {
+    const userId = req.user.userId;
+    return await this.postService.getAll(userId);
   }
 
   @Post('/like/:postId')

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/post.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class PostsService {
@@ -14,7 +14,7 @@ export class PostsService {
     return await this.postModel.create(postCreateDto);
   }
 
-  async getAll() {
+  async getAll(authUserId) {
     const pipeline = [
       {
         $lookup: {
@@ -32,8 +32,28 @@ export class PostsService {
           as: 'user',
         },
       },
+      { $unwind: '$user' },
       {
-        $unwind: '$user',
+        $addFields: {
+          is_liked: {
+            $cond: {
+              if: {
+                $and: [
+                  { $isArray: '$user_likes' },
+                  { $gt: [{ $size: '$user_likes' }, 0] },
+                  {
+                    $in: [
+                      new mongoose.Types.ObjectId(authUserId),
+                      '$user_likes',
+                    ],
+                  },
+                ],
+              },
+              then: true,
+              else: false,
+            },
+          },
+        },
       },
     ];
 
