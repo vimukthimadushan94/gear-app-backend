@@ -27,11 +27,12 @@ export class PostsService {
     postCreateDto.user_id = userId;
     //post published when post created
     postCreateDto.is_published = true;
+    postCreateDto.latest_comment = null;
     return await this.postModel.create(postCreateDto);
   }
 
   async getAll(authUserId) {
-    const pipeline = [
+    const pipelineArr = [
       {
         $lookup: {
           from: 'media',
@@ -46,6 +47,14 @@ export class PostsService {
           localField: 'user_id',
           foreignField: '_id',
           as: 'user',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          let: { postId: '$_id' },
+          pipeline: [{ $match: { $expr: { $eq: ['$post_id', '$$postId'] } } }],
+          as: 'latest_comment',
         },
       },
       { $unwind: '$user' },
@@ -73,7 +82,7 @@ export class PostsService {
       },
     ];
 
-    const postsWithImages = await this.postModel.aggregate(pipeline).exec();
+    const postsWithImages = await this.postModel.aggregate(pipelineArr).exec();
     return postsWithImages;
   }
 

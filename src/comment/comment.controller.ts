@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   NotFoundException,
   Param,
   Post,
@@ -37,5 +38,12 @@ export class CommentController {
     } else {
       throw new NotFoundException('Post not exists');
     }
+  }
+
+  @Get('/:postId')
+  async getComments(@Param() param) {
+    const { postId } = param;
+    const comments = this.commentService.getByPostId(postId);
+    return comments;
   }
 }
