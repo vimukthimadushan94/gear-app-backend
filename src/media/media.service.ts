@@ -19,6 +19,19 @@ export class MediaService {
     });
   }
 
+  async uploadAvatar(file: Express.Multer.File, modelId: any, type: string) {
+    const response = await this.mediaModel.create({
+      related_model: modelId,
+      type: type,
+      original_name: file.originalname,
+      file_name: file.filename,
+      size: file.size,
+      mime_type: file.mimetype,
+      path: file.path,
+    });
+    return response;
+  }
+
   async get() {
     return await this.mediaModel.find().populate('related_model');
   }
