@@ -3,17 +3,25 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UserService } from 'src/user/user.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('api/media')
 export class MediaController {
-  constructor(private mediaService: MediaService) {}
+  constructor(
+    private mediaService: MediaService,
+    private userService: UserService,
+  ) {}
 
   @Get('/')
   async getAll() {
@@ -43,7 +51,7 @@ export class MediaController {
     return images;
   }
 
-  @Post('update-avatar/:userId')
+  @Post('update-avatar')
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -58,9 +66,18 @@ export class MediaController {
   )
   async updateProfileImage(
     @UploadedFile() avatar: Express.Multer.File,
-    @Param('userId') userId,
+    @Req() req: any,
   ) {
-    const response = this.mediaService.uploadAvatar(avatar, userId, 'User');
-    return response;
+    const userId = req.user.userId;
+    const mediaResponse = await this.mediaService.uploadAvatar(
+      avatar,
+      userId,
+      'User',
+    );
+    const userResponse = await this.userService.updateUserAvatar(
+      mediaResponse,
+      userId,
+    );
+    return userResponse;
   }
 }

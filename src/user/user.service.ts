@@ -36,4 +36,14 @@ export class UserService {
     const user = await this.userModel.findOne({ email: email });
     return user;
   }
+
+  async updateUserAvatar(media, userId) {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      { avatar: media.path },
+      { new: true },
+    );
+
+    return user;
+  }
 }
