@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -53,9 +54,13 @@ export class PostsController {
   }
 
   @Get('/')
-  async getPosts(@Req() req: any) {
+  async getPosts(@Req() req: any, @Query() query: any) {
     const userId = req.user.userId;
-    return await this.postService.getAll(userId);
+    return await this.postService.getAll(
+      userId,
+      Number(query.page),
+      Number(query.limit),
+    );
   }
 
   @Post('/like/:postId')

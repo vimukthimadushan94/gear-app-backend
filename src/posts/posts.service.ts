@@ -31,8 +31,14 @@ export class PostsService {
     return await this.postModel.create(postCreateDto);
   }
 
-  async getAll(authUserId) {
+  async getAll(authUserId, page: number, perPage: number) {
     const pipelineArr = [
+      {
+        $skip: (page - 1) * perPage,
+      },
+      {
+        $limit: perPage,
+      },
       {
         $lookup: {
           from: 'media',
