@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   NotFoundException,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UserUpdateDto } from './dto/UserUpdate.dto';
 
 @Controller('api/user')
 export class UserController {
@@ -46,5 +48,20 @@ export class UserController {
       return user;
     }
     throw new NotFoundException();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/profile')
+  async updateProfile(
+    @Body() userUpdateReq: UserUpdateDto,
+    @Request() req: any,
+  ) {
+    const user = await this.userService.findOne(req.user.email);
+    if (user) {
+      const updatedUser = this.userService.updateUser(userUpdateReq, user);
+      return updatedUser;
+    } else {
+      throw new NotFoundException();
+    }
   }
 }

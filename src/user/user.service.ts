@@ -46,4 +46,11 @@ export class UserService {
 
     return user;
   }
+
+  async updateUser(userUpdateReq, user) {
+    user.first_name = userUpdateReq.first_name;
+    user.last_name = userUpdateReq.last_name;
+    user.age = userUpdateReq.age;
+    return user.save();
+  }
 }
