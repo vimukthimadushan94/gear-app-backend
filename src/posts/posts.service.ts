@@ -32,7 +32,12 @@ export class PostsService {
   }
 
   async getAll(authUserId, page: number, perPage: number) {
-    const pipelineArr = [
+    const pipelineArr: any[] = [
+      {
+        $sort: {
+          createdAt: -1, // Assuming you want the most recent posts first
+        },
+      },
       {
         $skip: (page - 1) * perPage,
       },
