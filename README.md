@@ -24,7 +24,11 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.This application includes all the API's related to the gear app application
+
+## Video Resources
+
+[![Next.js Overview](https://img.youtube.com/vi/_U4alZGZikY/maxresdefault.jpg)](https://www.youtube.com/watch?v=_U4alZGZikY)(https://www.youtube.com/watch?v=_U4alZGZikY "Click to play ▶")
 
 ## Installation
 
